@@ -22,7 +22,8 @@ end
 def choose_starting_player
   starting_player = ''
   loop do
-    prompt "Who starts the game?"
+    prompt "Welcome to TicTacToe!"
+    prompt "Who would you like to start the game?"
     prompt "Press 'P' for #{STARTING_PLAYER['P']}."
     prompt "Press 'C' for #{STARTING_PLAYER['C']}."
     prompt "Press 'R' for #{STARTING_PLAYER['R']}."
