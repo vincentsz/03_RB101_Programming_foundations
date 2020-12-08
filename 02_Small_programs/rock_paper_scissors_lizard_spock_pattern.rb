@@ -1,12 +1,13 @@
 VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
 WIN = {
-  VALID_CHOICES[0] => [VALID_CHOICES[2], VALID_CHOICES[3]],
-  VALID_CHOICES[1] => [VALID_CHOICES[0], VALID_CHOICES[4]],
-  VALID_CHOICES[2] => [VALID_CHOICES[1], VALID_CHOICES[3]],
-  VALID_CHOICES[3] => [VALID_CHOICES[1], VALID_CHOICES[4]],
-  VALID_CHOICES[4] => [VALID_CHOICES[0], VALID_CHOICES[2]]
+  'rock' => ['scissors', 'lizard'],
+  'paper' => ['rock', 'spock'],
+  'scissors' => ['paper', 'lizard'],
+  'lizard' => ['paper', 'spock'],
+  'spock' => ['rock', 'scissors']
 }
 YES_NO = ['yes', 'no']
+AMOUNT_T0_WIN = [5]
 
 def clear_screen
   system("clear") || system("cls")
@@ -17,7 +18,7 @@ def prompt(message)
 end
 
 def display_welcome
-  prompt("Welcome to #{VALID_CHOICES.join(', ')}! Best out of 5 wins the game!")
+  prompt("Welcome to #{VALID_CHOICES.join(', ')}! Best out of #{AMOUNT_T0_WIN[0]} wins the game!")
 end
 
 def reset_scores
@@ -88,33 +89,24 @@ def add_score(player, computer, score)
 end
 
 def display_score(score)
-  if score[:player_score] == 1 && score[:computer_score] == 1
-    prompt("You have #{score[:player_score]} point!")
-    prompt("The computer has #{score[:computer_score]} point!")
-  elsif score[:player_score] == 1
-    prompt("You have #{score[:player_score]} point!")
-    prompt("The computer has #{score[:computer_score]} points!")
-  elsif score[:computer_score] == 1
-    prompt("You have #{score[:player_score]} points!")
-    prompt("The computer has #{score[:computer_score]} point!")
-  else
-    prompt("You have #{score[:player_score]} points!")
-    prompt("The computer has #{score[:computer_score]} points!")
-  end
+  player = score[:player_score]
+  computer = score[:computer_score]
+  prompt("You have #{player} point#{player == 1 ? '' : 's'}!")
+  prompt("The computer has #{computer} point#{computer == 1 ? '' : 's'}!")
 end
 
 def display_winner(score)
-  if score[:player_score] == 5 && score[:computer_score] == 5
+  if score[:player_score] == AMOUNT_T0_WIN[0] && score[:computer_score] == AMOUNT_T0_WIN[0]
     prompt("The game is a tie!")
-  elsif score[:player_score] == 5
+  elsif score[:player_score] == AMOUNT_T0_WIN[0]
     prompt("You won the game!")
-  elsif score[:computer_score] == 5
+  elsif score[:computer_score] == AMOUNT_T0_WIN[0]
     prompt("The computer won the game!")
   end
 end
 
 def someone_won?(score)
-  score[:player_score] == 5 || score[:computer_score] == 5
+  score[:player_score] == AMOUNT_T0_WIN[0] || score[:computer_score] == AMOUNT_T0_WIN[0]
 end
 
 def retrieve_play_again
