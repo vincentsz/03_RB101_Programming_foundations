@@ -230,7 +230,7 @@ def establish_winner_game(scr)
   nil
 end
 
-def play_again?
+def play_again
   answer = ''
   loop do
     prompt "Play again? Type Y or N"
@@ -277,7 +277,7 @@ loop do # entire game loop
     prompt "The game is a tie!"
   end
 
-  answer = play_again?
+  answer = play_again
   break if answer == "N"
 end
 
