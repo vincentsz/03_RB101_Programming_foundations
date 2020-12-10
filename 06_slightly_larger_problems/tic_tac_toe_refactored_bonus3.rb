@@ -1,4 +1,3 @@
-require 'rubocop'
 # constants--------------------------------------------------------------
 INITIAL_VALUE = ' '
 PLAYER_VALUE = 'X'
@@ -25,27 +24,18 @@ def prompt(text)
   puts "=> #{text}"
 end
 
-# rubocop:disable Metrics/MethodLength
 def choose_starting_player
   starting_player = ''
-  prompt "Welcome to TicTacToe!"
   prompt "Best out of five wins!"
   loop do
     prompt "Who would you like to go first?"
     prompt "Press #{PLAYER_STARTS} for #{START_LEGEND[PLAYER_STARTS]}."
     prompt "Press #{COMPUTER_STARTS} for #{START_LEGEND[COMPUTER_STARTS]}."
     prompt "Press #{RANDOM_STARTS} for #{START_LEGEND[RANDOM_STARTS]}."
-    starting_player = gets.chomp.upcase[0]
-    case starting_player
-    when PLAYER_STARTS
-      break
-    when COMPUTER_STARTS
-      break
-    when RANDOM_STARTS
-      break
-    else
-      prompt "Sorry, invalid input!"
-    end
+    starting_player = gets.chomp.upcase
+
+    break if valid_starter?(starting_player)
+    prompt "Sorry, invalid input!"
   end
 
   if starting_player == RANDOM_STARTS
@@ -54,7 +44,10 @@ def choose_starting_player
 
   starting_player
 end
-# rubocop:enable Metrics/MethodLength
+
+def valid_starter?(choice)
+  [PLAYER_STARTS, COMPUTER_STARTS, RANDOM_STARTS].include?(choice)
+end
 
 def initalize_board
   new_board = {}
@@ -97,17 +90,20 @@ def place_piece(brd, plyr)
 end
 
 def player_choice!(brd)
+  player_choice = ''
   loop do
     prompt "Choose one of the following squares:"
     prompt joinor(empty_squares(brd))
-    player_choice = gets.chomp.to_i
-    if empty_squares(brd).include?(player_choice)
-      brd[player_choice] = PLAYER_VALUE
-      break
-    else
-      puts "Sorry, invalid input!"
-    end
+    player_choice = gets.chomp
+
+    break if valid_choice?(player_choice, brd)
+    prompt "Sorry, invalid input!"
   end
+  brd[player_choice.to_i] = PLAYER_VALUE
+end
+
+def valid_choice?(choice, brd)
+  (choice == choice.to_i.to_s) && (empty_squares(brd).include?(choice.to_i))
 end
 
 def empty_squares(brd)
@@ -150,10 +146,10 @@ def immediate_move?(brd, value)
   !!immediate_square(brd, value)
 end
 
-# rubocop:disable Layout/LineLength
 def immediate_square(brd, value)
   WINNING_COMBOS.each do |list|
-    if (brd.values_at(*list).count(value) == 2) && (brd.values_at(*list).count(INITIAL_VALUE) == 1)
+    if (brd.values_at(*list).count(value) == 2) &&
+       (brd.values_at(*list).count(INITIAL_VALUE) == 1)
       return list.select do |square|
         brd[square] == INITIAL_VALUE
       end
@@ -161,7 +157,6 @@ def immediate_square(brd, value)
   end
   nil
 end
-# rubocop:enable Layout/LineLength
 
 def alternate_player(plyr)
   if plyr == PLAYER_STARTS
@@ -214,7 +209,7 @@ end
 # rubocop:enable Layout/LineLength
 
 def pace_interaction
-  Kernel.sleep(2)
+  Kernel.sleep(4)
 end
 
 def someone_won_game?(scr)
@@ -230,18 +225,19 @@ def establish_winner_game(scr)
   nil
 end
 
-def play_again
+def play_again?
   answer = ''
   loop do
     prompt "Play again? Type Y or N"
-    answer = gets.chomp[0].upcase
-    break if answer[0].upcase == "Y" || answer[0].upcase == "N"
+    answer = gets.chomp.upcase
+    break if ['Y', 'N', 'NO', 'YES'].include?(answer)
     prompt "Invalid input!"
   end
-  answer
+  answer.start_with?('Y')
 end
 
 # main program--------------------------------------------------------------
+prompt "Welcome to TicTacToe!"
 loop do # entire game loop
   score = initalize_score
   starting_player = choose_starting_player
@@ -278,7 +274,7 @@ loop do # entire game loop
   end
 
   answer = play_again
-  break if answer == "N"
+  break if answer
 end
 
 prompt "Thank you for playing! Goodbye!"
