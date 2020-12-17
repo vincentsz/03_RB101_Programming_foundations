@@ -142,6 +142,7 @@ def retrieve_player_choice
   player_choice[0].downcase
 end
 
+# rubocop:disable Metrics/MethodLength
 def player_turn(choice, plyr, crnt)
   player_score = ''
   loop do
@@ -158,8 +159,9 @@ def player_turn(choice, plyr, crnt)
       break
     end
   end
-  player_score 
+  player_score
 end
+# rubocop:enable Metrics/MethodLength
 
 def display_player_hands(plyr)
   pace_interaction
@@ -204,7 +206,7 @@ def sums_aces(aces, total_non_aces)
   end
 end
 
-def display_player_move(plyr, plyr_scr, dlr)
+def display_player_move(plyr_scr, dlr)
   if under_22?(plyr_scr)
     prompt "Player stays!"
   else
@@ -254,9 +256,9 @@ def pace_interaction
 end
 
 def display_winner(plyr_scr, dlr_scr)
-  if dlr_scr == nil ||
-    (plyr_scr < dlr_scr && under_22?(dlr_scr)) ||
-    !under_22?(plyr_scr)
+  if dlr_scr.nil? ||
+     (plyr_scr < dlr_scr && under_22?(dlr_scr)) ||
+     !under_22?(plyr_scr)
     "Dealer wins!"
   elsif plyr_scr == dlr_scr
     "It's a tie!"
@@ -269,7 +271,7 @@ def calculate_total_score(rslt, scr)
   if rslt == "Dealer wins!"
     scr[:dealer] += 1
   elsif rslt == "You win!"
-      scr[:player] += 1
+    scr[:player] += 1
   else
     scr[:dealer] += 1
     scr[:player] += 1
@@ -327,7 +329,7 @@ loop do # main game loop
     display_initial_hands(player_hand, dealer_hand)
     player_choice = retrieve_player_choice
     player_score = player_turn(player_choice, player_hand, current_deck)
-    display_player_move(player_hand, player_score, dealer_hand)
+    display_player_move(player_score, dealer_hand)
 
     if under_22?(player_score)
       dealer_score = dealer_turn(dealer_hand, current_deck)
@@ -344,10 +346,10 @@ loop do # main game loop
     pace_interaction
     clear_screen
   end
-    display_total_winner(game_score)
-    answer = play_again?
-    break unless answer
-    clear_screen
+  display_total_winner(game_score)
+  answer = play_again?
+  break unless answer
+  clear_screen
 end
 
 prompt "Thank you for playing 21! Goodbye!"
