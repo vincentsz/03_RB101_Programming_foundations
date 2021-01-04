@@ -1,37 +1,30 @@
-# Constants------------------------
-SUITS = ["hearts", "diamonds", "clubs", "spades"]
+require 'pry'
 
-VALUES_NUMERIC = {
-  "2" => 2,
-  "3" => 3,
-  "4" => 4,
-  "5" => 5,
-  "6" => 6,
-  "7" => 7,
-  "8" => 8,
-  "9" => 9,
-  "10" => 10,
-  "jack" => 10,
-  "queen" => 10,
-  "king" => 10,
-  "ace" => [1, 11]
-}
+# Constants------------------------
+SUITS = [
+  {suit: "hearts"}, 
+  {suit: "diamonds"}, 
+  {suit: "clubs"}, 
+  {suit: "spades"}
+]
+
+VALUES = [
+  {value: "2", points: 2, alphabetical: "two"},
+  {value: "3", points: 3, alphabetical: "three"},
+  {value: "4", points: 4, alphabetical: "four"},
+  {value: "5", points: 5, alphabetical: "five"},
+  {value: "6", points: 6, alphabetical: "six"},
+  {value: "7", points: 7, alphabetical: "seven"},
+  {value: "8", points: 8, alphabetical: "eight"},
+  {value: "9", points: 9, alphabetical: "nine"},
+  {value: "10", points: 10, alphabetical: "ten"},
+  {value: "jack", points: 10, alphabetical: "jack"},
+  {value: "queen", points: 10, alphabetical: "queen"},
+  {value: "king", points: 10, alphabetical: "king"},
+  {value: "ace", points: [1, 11], alphabetical: "ace"}
+]
+
 VOWELS = ["a", "e", "i", "o", "u"]
-VALUES_N_NUMERIC = {
-  "2" => "two",
-  "3" => "three",
-  "4" => "four",
-  "5" => "five",
-  "6" => "six",
-  "7" => "seven",
-  "8" => "eight",
-  "9" => "nine",
-  "10" => "ten",
-  "jack" => "jack",
-  "queen" => "queen",
-  "king" => "king",
-  "ace" => "ace"
-}
 
 VALID_CHOICES = ["h", "hit", "s", "stay"]
 
@@ -67,10 +60,10 @@ def display_round(cntr)
 end
 
 def initalize_deck
-  deck = {}
+  deck = []
   SUITS.each do |suit|
-    VALUES_NUMERIC.each do |value, num|
-      deck[[value, suit]] = num
+    VALUES.each do |value|
+      deck << suit.merge(value)
     end
   end
   deck
@@ -118,7 +111,7 @@ def joinand(hand, separator = ', ', last = 'and ')
 end
 
 def display_card(card)
-  display_a_or_an(card[0]) + card[0] + " of " + card[1]
+  display_a_or_an(card[:alphabetical]) + card[:value] + " of " + card[:suit]
 end
 
 def display_a_or_an(value)
@@ -126,7 +119,7 @@ def display_a_or_an(value)
 end
 
 def a_or_an?(vlu)
-  VOWELS.include?(VALUES_N_NUMERIC[vlu][0])
+  VOWELS.include?([vlu][0])
 end
 
 def retrieve_player_choice
@@ -176,10 +169,10 @@ def calculate_score(hand)
   non_aces = []
   aces = []
   hand.each do |card|
-    if VALUES_NUMERIC[card[0]].is_a?(Integer)
-      non_aces << VALUES_NUMERIC[card[0]]
+    if card[:points].is_a?(Integer)
+      non_aces << card[:points]
     else
-      aces << VALUES_NUMERIC[card[0]]
+      aces << card[:points]
     end
   end
 
@@ -197,7 +190,7 @@ def sum_non_aces(non_aces)
 end
 
 def sums_aces(aces, total_non_aces)
-  aces_combinations = VALUES_NUMERIC["ace"].repeated_combination(aces.size).to_a
+  aces_combinations = aces[0].repeated_combination(aces.size).to_a
   sums_aces = aces_combinations.map { |array| array.sum + total_non_aces }
   if sums_aces.any? { |num| num < BUST }
     sums_aces.select { |num| num < BUST }.max
@@ -322,17 +315,17 @@ loop do # main game loop
     counter += 1
     display_round(counter)
     initial_deck = initalize_deck
-    current_deck = initial_deck.keys
     player_hand = initialize_hand
     dealer_hand = initialize_hand
-    dealing_initial_cards(player_hand, dealer_hand, current_deck)
+    dealing_initial_cards(player_hand, dealer_hand, initial_deck)
     display_initial_hands(player_hand, dealer_hand)
+    #binding.pry
     player_choice = retrieve_player_choice
-    player_score = player_turn(player_choice, player_hand, current_deck)
+    player_score = player_turn(player_choice, player_hand, initial_deck)
     display_player_move(player_score, dealer_hand)
 
     if under_22?(player_score)
-      dealer_score = dealer_turn(dealer_hand, current_deck)
+      dealer_score = dealer_turn(dealer_hand, initial_deck)
       display_dealer_move(dealer_score)
       if under_22?(dealer_score)
         display_score(player_score, dealer_score)
