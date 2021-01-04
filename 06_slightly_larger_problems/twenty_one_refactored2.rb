@@ -1,27 +1,25 @@
-require 'pry'
-
 # Constants------------------------
 SUITS = [
-  {suit: "hearts"}, 
-  {suit: "diamonds"}, 
-  {suit: "clubs"}, 
-  {suit: "spades"}
+  { suit: "hearts" },
+  { suit: "diamonds" },
+  { suit: "clubs" },
+  { suit: "spades" }
 ]
 
 VALUES = [
-  {value: "2", points: 2, alphabetical: "two"},
-  {value: "3", points: 3, alphabetical: "three"},
-  {value: "4", points: 4, alphabetical: "four"},
-  {value: "5", points: 5, alphabetical: "five"},
-  {value: "6", points: 6, alphabetical: "six"},
-  {value: "7", points: 7, alphabetical: "seven"},
-  {value: "8", points: 8, alphabetical: "eight"},
-  {value: "9", points: 9, alphabetical: "nine"},
-  {value: "10", points: 10, alphabetical: "ten"},
-  {value: "jack", points: 10, alphabetical: "jack"},
-  {value: "queen", points: 10, alphabetical: "queen"},
-  {value: "king", points: 10, alphabetical: "king"},
-  {value: "ace", points: [1, 11], alphabetical: "ace"}
+  { value: "2", points: 2, alphabetical: "two" },
+  { value: "3", points: 3, alphabetical: "three" },
+  { value: "4", points: 4, alphabetical: "four" },
+  { value: "5", points: 5, alphabetical: "five" },
+  { value: "6", points: 6, alphabetical: "six" },
+  { value: "7", points: 7, alphabetical: "seven" },
+  { value: "8", points: 8, alphabetical: "eight" },
+  { value: "9", points: 9, alphabetical: "nine" },
+  { value: "10", points: 10, alphabetical: "ten" },
+  { value: "jack", points: 10, alphabetical: "jack" },
+  { value: "queen", points: 10, alphabetical: "queen" },
+  { value: "king", points: 10, alphabetical: "king" },
+  { value: "ace", points: [1, 11], alphabetical: "ace" }
 ]
 
 VOWELS = ["a", "e", "i", "o", "u"]
@@ -319,7 +317,6 @@ loop do # main game loop
     dealer_hand = initialize_hand
     dealing_initial_cards(player_hand, dealer_hand, initial_deck)
     display_initial_hands(player_hand, dealer_hand)
-    #binding.pry
     player_choice = retrieve_player_choice
     player_score = player_turn(player_choice, player_hand, initial_deck)
     display_player_move(player_score, dealer_hand)
